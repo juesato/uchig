@@ -1,0 +1,40 @@
+2014-02-28 02:46:46,825.378 [javawsApplicationMain] WARN  configuration - configuration directory 'C:\Users\Jonathan\conf_local' does not exist
+2014-02-28 02:46:46,825.797 [javawsApplicationMain] WARN  configuration - configuration directory 'conf' does not exist
+2014-02-28 02:46:47,976.981 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.freeway.onramp.ClientController$3@1364b6,notifier=null,catchExceptions=false,when=1393573607268] on sun.awt.windows.WToolkit@cd0f45, 708 ms
+2014-02-28 02:46:47,977.316 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,978.694 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,979.242 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,979.815 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,980.296 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,981.916 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,982.900 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,983.076 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:46:47,983.160 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:47:00,616.835 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@13d5cdd,notifier=null,catchExceptions=false,when=1393573607647] on sun.awt.windows.WToolkit@cd0f45, 12546 ms
+2014-02-28 02:47:26,207.871 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@89bdca,notifier=null,catchExceptions=false,when=1393573620612] on sun.awt.windows.WToolkit@cd0f45, 25592 ms
+2014-02-28 02:47:41,283.480 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@163a12d,notifier=null,catchExceptions=false,when=1393573646203] on sun.awt.windows.WToolkit@cd0f45, 15075 ms
+2014-02-28 02:47:42,312.370 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@16d0290,notifier=null,catchExceptions=false,when=1393573661277] on sun.awt.windows.WToolkit@cd0f45, 1029 ms
+2014-02-28 02:47:58,618.082 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@1d94e88,notifier=null,catchExceptions=false,when=1393573662307] on sun.awt.windows.WToolkit@cd0f45, 16306 ms
+2014-02-28 02:47:59,432.025 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@1e6ac28,notifier=null,catchExceptions=false,when=1393573678613] on sun.awt.windows.WToolkit@cd0f45, 812 ms
+2014-02-28 02:48:00,000.921 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@615213,notifier=null,catchExceptions=false,when=1393573679426] on sun.awt.windows.WToolkit@cd0f45, 568 ms
+2014-02-28 02:48:00,218.791 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@1e2d8db,notifier=null,catchExceptions=false,when=1393573679996] on sun.awt.windows.WToolkit@cd0f45, 217 ms
+2014-02-28 02:48:00,417.725 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@11f3b0c,notifier=null,catchExceptions=false,when=1393573680214] on sun.awt.windows.WToolkit@cd0f45, 198 ms
+2014-02-28 02:48:18,236.743 [javawsApplicationMain] WARN  configuration - configuration directory 'C:\Users\Jonathan\conf_local' does not exist
+2014-02-28 02:48:18,237.223 [javawsApplicationMain] WARN  configuration - configuration directory 'conf' does not exist
+2014-02-28 02:48:19,496.280 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.freeway.onramp.ClientController$3@177eafe,notifier=null,catchExceptions=false,when=1393573698789] on sun.awt.windows.WToolkit@dc3416, 707 ms
+2014-02-28 02:48:19,496.805 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,502.973 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,503.531 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,567.255 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,567.773 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,569.843 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,570.789 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,570.951 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:19,571.029 [queue.mbus.LocalBus.0] WARN  mbus - out of sequence on channel bus, id 2 != expected 1
+2014-02-28 02:48:30,903.119 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@1b8b79b,notifier=null,catchExceptions=false,when=1393573699204] on sun.awt.windows.WToolkit@dc3416, 11312 ms
+2014-02-28 02:48:55,286.698 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.MouseEvent[MOUSE_RELEASED,(304,114),absolute(1064,550),button=1,modifiers=Button1,clickCount=1] on dialog0, 326 ms
+2014-02-28 02:48:55,286.772 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@e6b46f,notifier=null,catchExceptions=false,when=1393573710898] on sun.awt.windows.WToolkit@dc3416, 24384 ms
+2014-02-28 02:48:55,613.011 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@18a9358,notifier=null,catchExceptions=false,when=1393573735282] on sun.awt.windows.WToolkit@dc3416, 325 ms
+2014-02-28 02:48:56,063.451 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@ee9545,notifier=null,catchExceptions=false,when=1393573735609] on sun.awt.windows.WToolkit@dc3416, 448 ms
+2014-02-28 02:49:01,265.368 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@128deae,notifier=null,catchExceptions=false,when=1393573736058] on sun.awt.windows.WToolkit@dc3416, 5202 ms
+2014-02-28 02:49:01,975.560 [AWT-EventQueue-2] WARN  monitor - dispatchEvent too long, event java.awt.event.InvocationEvent[INVOCATION_DEFAULT,runnable=com.optionscity.messaging.Dispatcher$1@3b8a2f,notifier=null,catchExceptions=false,when=1393573741260] on sun.awt.windows.WToolkit@dc3416, 708 ms

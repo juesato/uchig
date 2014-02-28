@@ -1,0 +1,13 @@
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?> <jnlp spec="1.5+" codebase="http://64.74.102.111:10100/optionscity/optionscity/onramp">	<information>		<title>OnRamp</title>		<vendor>OptionsCity Software Inc.</vendor>		<homepage href="http://64.74.102.111:10100/optionscity/optionscity" />		<description>OnRamp Freeway Client</description>		<icon href="onramp.jpg"/>		<icon kind="splash" href="onramp.jpg"/>		<icon kind="shortcut" href="onramp.jpg"/>	</information>	<security>		<all-permissions/>	</security>	<resources>		<j2se version="1.6+" />		<property name="jnlp.server" value="64.74.102.111"/>		<property name="jnlp.server_port" value="10104"/>		<jar href="onramp.jar" />		<jar href="../common/jtreemap.jar" />		<jar href="../common/flexdock.jar" />		<jar href="aspectjrt.jar" />		<jar href="../common/log4j.jar" />		<jar href="../common/jna.jar" />		<jar href="../common/platform.jar" />		<jar href="../common/jfreechart.jar" />		<jar href="../common/jcommon.jar" />		<jar href="../common/forms_rt.jar" />		<jar href="../common/tablelib.jar" />		<jar href="../common/tablelayout.jar" />		<jar href="../common/commons-logging.jar" />		<jar href="httpclient-cache-4.1.2.jar" />		<jar href="httpcore-4.1.3.jar" />		<jar href="httpclient-4.1.2.jar" />		<jar href="httpcore-4.1.2.jar" />		<jar href="commons-codec-1.4.jar" />		<jar href="commons-lang3-3.0.jar" />		<jar href="commons-logging-1.1.1.jar" />		<jar href="httpmime-4.1.2.jar" />		<jar href="jackson-all-1.8.5.jar" />		<jar href="httpcore-nio-4.1.3.jar" />		<jar href="joda-time.jar" />		<jar href="jmathplot.jar" />	</resources>	<application-desc main-class="com.optionscity.freeway.onramp.OnRampMain" /></jnlp>
+
+
+
