@@ -14,7 +14,7 @@ import org.chicago.cases.arb.Quote;
 import com.optionscity.freeway.api.IDB;
 import com.optionscity.freeway.api.IJobSetup;
 
-public class ArbCaseImplementation extends AbstractExchangeArbCase {
+public class arbkai extends AbstractExchangeArbCase {
      
     class MyArbImplementation implements ArbCase {
         
@@ -44,6 +44,7 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
         public void addVariables(IJobSetup setup) {
             // Registers a variable with the system.
             setup.addVariable("someFactor", "factor used to adjust something", "int", "2");
+            setup.addVariable("slopeOfThing", "factor used to adjust something", "double", "1.0");
         }
 
         public void initializeAlgo(IDB database) {
@@ -55,10 +56,11 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
 
         @Override
         public void fillNotice(Exchange exchange, double price, AlgoSide algoside) {
-            log("My quote was filled with at a price of " + price + " on " + exchange + " as a " + algoside);
+            log("QUOTE FILLED at a price of " + price + " on " + exchange + " as a " + algoside);
              /**
              * Do I have to include something here tracking my pnl
              */
+            log("Trade happened at time" + (timeStep-5));
             if(algoside == AlgoSide.ALGOBUY){
                 position += 1;
                 spent+=price;
@@ -92,10 +94,10 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
 
         @Override
         public void newTopOfBook(Quote[] quotes) {
-        	timeStep++;
-        	log ("Time: " + timeStep);
+            timeStep++;
+            log ("TIME: " + timeStep);
             for (Quote quote : quotes) {
-                log("I received a new bid of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
+                log("NEW BID of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
             }
             /**
              * Important part is here I think? Do I have to change the other methods at all
@@ -103,6 +105,10 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
             double robotMid = (quotes[0].bidPrice+quotes[0].askPrice)/2.0;
             double snowMid = (quotes[1].bidPrice+quotes[1].askPrice)/2.0;
 
+            double threshold = 2.0;
+            if (Math.abs(robotMid-snowMid) > threshold)
+                log ("Wow this is an arbitrage opportunity");
+            
             
             fair = (robotMid+snowMid)/2.0;
             
@@ -135,17 +141,24 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
                 maxChange = Math.max(maxChange, currentChange*5/i);
             }
             
-            
-            
+            double adjustBasedOnPosition = 0.0;
+            double positionConstant = 0.10;
+            if (position >= 20)
+                adjustBasedOnPosition = (position-20)*positionConstant;
+            if (position <= -20)
+                adjustBasedOnPosition = (position+20)*positionConstant;
             
             double netpnl = fair*position - spent;
-        	//log ("CURRENT PNL: " + netpnl);
+            //log ("CURRENT PNL: " + netpnl);
+            final double slope = 1.0;
+            final double thisMyThing = 0.0001;
+            final double fixedMargin = 0.20;
+            log ("My fair price bb: " + fair);
+            desiredRobotPrices[0] = fair-slope*maxChange+thisMyThing-fixedMargin+adjustBasedOnPosition;
+            desiredRobotPrices[1] = fair+slope*maxChange+thisMyThing+fixedMargin+adjustBasedOnPosition;
 
-            desiredRobotPrices[0] = fair-maxChange+0.0001;
-            desiredRobotPrices[1] = fair+maxChange+0.0001;
-
-            desiredSnowPrices[0] = fair-maxChange+0.0001;
-            desiredSnowPrices[1] = fair+maxChange+0.0001;
+            desiredSnowPrices[0] = fair-slope*maxChange+thisMyThing-fixedMargin+adjustBasedOnPosition;
+            desiredSnowPrices[1] = fair+slope*maxChange+thisMyThing+fixedMargin+adjustBasedOnPosition;
         }
 
         @Override
@@ -153,7 +166,7 @@ public class ArbCaseImplementation extends AbstractExchangeArbCase {
             Quote[] quotes = new Quote[2];
             quotes[0] = new Quote(Exchange.ROBOT, desiredRobotPrices[0], desiredRobotPrices[1]);
             quotes[1] = new Quote(Exchange.SNOW, desiredSnowPrices[0], desiredSnowPrices[1]);
-            log("My output: My bid is " + desiredRobotPrices[0] + ", and my ask is " + desiredRobotPrices[1] + " on both exchanges");
+            log("MY BID IS " + desiredRobotPrices[0] + ", and my ask is " + desiredRobotPrices[1] + " on both exchanges");
             
             return quotes;
         }

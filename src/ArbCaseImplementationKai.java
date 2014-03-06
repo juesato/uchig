@@ -16,8 +16,7 @@ import com.optionscity.freeway.api.IJobSetup;
 
 public class ArbCaseImplementationKai extends AbstractExchangeArbCase {
      
-    class MyArbImplementation implements ArbCase {
-        
+    class MyArbImplementation implements ArbCase {        
 
     // Note...the IDB will be used to save data to the hard drive and access it later
     // This will be useful for retrieving data between rounds
@@ -110,10 +109,12 @@ public class ArbCaseImplementationKai extends AbstractExchangeArbCase {
             
             double robotMid = (quotes[0].bidPrice+quotes[0].askPrice)/2.0;
             double snowMid = (quotes[1].bidPrice+quotes[1].askPrice)/2.0;
-            double vol = 0.0;
             /**
              * Calcuate volatility here based on robotTrackedQuotes and snowTrackedQuotes
              */
+            double maxDown = 0.0;
+            double maxUp = 0.0;
+            
             
             fair = (robotMid+snowMid)/2.0;
             double netpnl = fair*position - spent;
