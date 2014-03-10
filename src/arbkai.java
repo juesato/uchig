@@ -30,7 +30,7 @@ public class arbkai extends AbstractExchangeArbCase {
     double pnl;
     double spent;
     double fair;
-    double slopeOfThing;
+    double aggression;
     
     int timeStep = 5; //first time this will be incremented is at 5
     int totalTrades; //decent metric of how aggressive we're being
@@ -45,7 +45,7 @@ public class arbkai extends AbstractExchangeArbCase {
         public void addVariables(IJobSetup setup) {
             // Registers a variable with the system.
             setup.addVariable("someFactor", "factor used to adjust something", "int", "2");
-            setup.addVariable("slopeOfThing", "factor used to adjust something", "double", "1.0");
+            setup.addVariable("aggression", "factor used to adjust something", "double", "1.0");
         }
 
         public void initializeAlgo(IDB database) {
@@ -53,15 +53,12 @@ public class arbkai extends AbstractExchangeArbCase {
             myDatabase = database;
             
             database.put("currentPosition", 0);
-            slopeOfThing = getDoubleVar("slopeOfThing");
+            aggression = getDoubleVar("aggression");
         }
 
         @Override
         public void fillNotice(Exchange exchange, double price, AlgoSide algoside) {
             log("QUOTE FILLED at a price of " + price + " on " + exchange + " as a " + algoside);
-             /**
-             * Do I have to include something here tracking my pnl
-             */
             log("Trade happened at time" + (timeStep-5));
             if(algoside == AlgoSide.ALGOBUY){
                 position += 1;
@@ -77,20 +74,17 @@ public class arbkai extends AbstractExchangeArbCase {
             
             pnl = position*fair-spent;
             if (position == 0) {
-                //log("POSITION 0! " + pnl);
+                log("POSITION 0! " + pnl);
             }
             else {
-                //log("CURRENT NET PNL IS: " + pnl + " Position: " + position);
+                log("CURRENT NET PNL IS: " + pnl + " Position: " + position);
             }
         }
 
         @Override
         public void positionPenalty(int clearedQuantity, double price) {
-            //log("I received a position penalty with " + clearedQuantity + " positions cleared at " + price);
+            log("I received a position penalty with " + clearedQuantity + " positions cleared at " + price);
             position -= clearedQuantity;
-            /**
-             * I have to implement something here too right?
-             */
             spent -= clearedQuantity*price;
         }
 
@@ -101,15 +95,10 @@ public class arbkai extends AbstractExchangeArbCase {
             for (Quote quote : quotes) {
                 //log("NEW BID of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
             }
-            /**
-             * Important part is here I think? Do I have to change the other methods at all
-             */
+
             double robotMid = (quotes[0].bidPrice+quotes[0].askPrice)/2.0;
             double snowMid = (quotes[1].bidPrice+quotes[1].askPrice)/2.0;
 
-            double threshold = 1.0;
-            if (Math.abs(robotMid-snowMid) > threshold)
-                log ("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW this is an arbitrage opportunity");
             
             
             fair = (robotMid+snowMid)/2.0;
@@ -146,23 +135,29 @@ public class arbkai extends AbstractExchangeArbCase {
             double adjustBasedOnPosition = 0.0;
             double positionConstant = 0.10;
             if (position >= 75)
-                adjustBasedOnPosition = (position-10)*positionConstant;
+                adjustBasedOnPosition = (position-75)*positionConstant;
                 //log ("ADJUSTING" + adjustBasedOnPosition);
             if (position <= -75)
-                adjustBasedOnPosition = (-position-10)*positionConstant;
+                adjustBasedOnPosition = (-position-75)*positionConstant;
                 //log ("ADJUSTING" + adjustBasedOnPosition); 
             
             double netpnl = fair*position - spent;
             //log ("CURRENT PNL: " + netpnl);
-            final double slope = 0.75;
-            final double thisMyThing = 0.0001;
             final double fixedMargin = 0.20;
+            double dontTrade = 5.00;
             //log ("My fair price bb: " + fair);
-            desiredRobotPrices[0] = fair-slopeOfThing*maxChange+thisMyThing-fixedMargin+adjustBasedOnPosition;
-            desiredRobotPrices[1] = fair+slopeOfThing*maxChange+thisMyThing+fixedMargin+adjustBasedOnPosition;
+            
+            double threshold = 1.0;
+            if (Math.abs(robotMid-snowMid) > threshold) {
+                log ("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW this is an arbitrage opportunity");
+                dontTrade = 0.0;
+            }
+            
+            desiredRobotPrices[0] = fair-aggression*maxChange-fixedMargin+adjustBasedOnPosition-dontTrade;
+            desiredRobotPrices[1] = fair+aggression*maxChange+fixedMargin+adjustBasedOnPosition+dontTrade;
 
-            desiredSnowPrices[0] = fair-slopeOfThing*maxChange+thisMyThing-fixedMargin+adjustBasedOnPosition;
-            desiredSnowPrices[1] = fair+slopeOfThing*maxChange+thisMyThing+fixedMargin+adjustBasedOnPosition;
+            desiredSnowPrices[0] = fair-aggression*maxChange-fixedMargin+adjustBasedOnPosition-dontTrade;
+            desiredSnowPrices[1] = fair+aggression*maxChange+fixedMargin+adjustBasedOnPosition+dontTrade;
         }
 
         @Override
@@ -170,7 +165,7 @@ public class arbkai extends AbstractExchangeArbCase {
             Quote[] quotes = new Quote[2];
             quotes[0] = new Quote(Exchange.ROBOT, desiredRobotPrices[0], desiredRobotPrices[1]);
             quotes[1] = new Quote(Exchange.SNOW, desiredSnowPrices[0], desiredSnowPrices[1]);
-            //log("MY BID IS " + desiredRobotPrices[0] + ", and my ask is " + desiredRobotPrices[1] + " on both exchanges");
+            log("MY BID IS " + desiredRobotPrices[0] + ", and my ask is " + desiredRobotPrices[1] + " on both exchanges");
             
             return quotes;
         }
