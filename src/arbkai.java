@@ -31,7 +31,9 @@ public class arbkai extends AbstractExchangeArbCase {
     double spent;
     double fair;
     double aggression;
-    
+    double threshold;
+    double edge;
+    double minSpread;
     int timeStep = 5; //first time this will be incremented is at 5
     int totalTrades; //decent metric of how aggressive we're being
     
@@ -44,8 +46,10 @@ public class arbkai extends AbstractExchangeArbCase {
 
         public void addVariables(IJobSetup setup) {
             // Registers a variable with the system.
-            setup.addVariable("someFactor", "factor used to adjust something", "int", "2");
-            setup.addVariable("aggression", "factor used to adjust something", "double", "1.0");
+            setup.addVariable("aggression", "factor used to adjust something", "double", "0.75");
+            setup.addVariable("threshold", "threshold on difference between two exchanges before trading", "double", "1.0");
+            setup.addVariable("edge", "small amount of edge", "double", "0.20");
+            setup.addVariable("minSpread", "minimum size of spread (for round 3 should be 3 for safety)", "double", "3.0");
         }
 
         public void initializeAlgo(IDB database) {
@@ -54,6 +58,9 @@ public class arbkai extends AbstractExchangeArbCase {
             
             database.put("currentPosition", 0);
             aggression = getDoubleVar("aggression");
+            threshold = getDoubleVar("threshold");
+            edge = getDoubleVar("edge");
+            minSpread = getDoubleVar("minSpread");
         }
 
         @Override
@@ -116,9 +123,7 @@ public class arbkai extends AbstractExchangeArbCase {
             size = robotTrackedQuotes.size();
             
             
-            
-            double vol = 0.0;
-            /**
+             /**
              * Calcuate volatility here based on robotTrackedQuotes and snowTrackedQuotes
              */
             double maxChange = 0.0;
@@ -134,30 +139,41 @@ public class arbkai extends AbstractExchangeArbCase {
             
             double adjustBasedOnPosition = 0.0;
             double positionConstant = 0.10;
-            if (position >= 75)
-                adjustBasedOnPosition = (position-75)*positionConstant;
+            int selfImposedPositionLimit = 160;
+            if (timeStep > 750) {
+                int helperVar = (timeStep-750)/10;
+                selfImposedPositionLimit = 160-helperVar*6;
+            }
+                
+            if (position >= selfImposedPositionLimit) {
+                adjustBasedOnPosition = (-position+selfImposedPositionLimit)*positionConstant;
+            }
                 //log ("ADJUSTING" + adjustBasedOnPosition);
-            if (position <= -75)
-                adjustBasedOnPosition = (-position-75)*positionConstant;
+            if (position <= -selfImposedPositionLimit) {
+                adjustBasedOnPosition = (-position-selfImposedPositionLimit)*positionConstant;
+            }
                 //log ("ADJUSTING" + adjustBasedOnPosition); 
             
             double netpnl = fair*position - spent;
             //log ("CURRENT PNL: " + netpnl);
-            final double fixedMargin = 0.20;
-            double dontTrade = 5.00;
+            double dontTrade = 30.00;
             //log ("My fair price bb: " + fair);
             
-            double threshold = 1.0;
+            //double threshold = 1.0;
             if (Math.abs(robotMid-snowMid) > threshold) {
                 log ("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW this is an arbitrage opportunity");
                 dontTrade = 0.0;
             }
             
-            desiredRobotPrices[0] = fair-aggression*maxChange-fixedMargin+adjustBasedOnPosition-dontTrade;
-            desiredRobotPrices[1] = fair+aggression*maxChange+fixedMargin+adjustBasedOnPosition+dontTrade;
+            double adjustedFair = fair + adjustBasedOnPosition;
+            double spreadSizeOneDirection = Math.max(aggression*maxChange+edge+dontTrade, minSpread/2);
+            
+            desiredRobotPrices[0] = adjustedFair-spreadSizeOneDirection;
+            desiredRobotPrices[1] = adjustedFair+spreadSizeOneDirection;
 
-            desiredSnowPrices[0] = fair-aggression*maxChange-fixedMargin+adjustBasedOnPosition-dontTrade;
-            desiredSnowPrices[1] = fair+aggression*maxChange+fixedMargin+adjustBasedOnPosition+dontTrade;
+            desiredSnowPrices[0] = adjustedFair-spreadSizeOneDirection;
+            desiredSnowPrices[1] = adjustedFair+spreadSizeOneDirection;
+            
         }
 
         @Override
