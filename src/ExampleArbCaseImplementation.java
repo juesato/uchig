@@ -59,6 +59,11 @@ public class ExampleArbCaseImplementation extends AbstractExchangeArbCase implem
 		log ("Bid at " + desiredRobotPrices[0] + " and ask of " + desiredRobotPrices[1]);
 		desiredSnowPrices[0] = quotes[1].bidPrice + 0.2;
 		desiredSnowPrices[1] = quotes[1].askPrice - 0.2;
+		
+		desiredRobotPrices[0] = 80.0;
+		desiredRobotPrices[1] = 110.0;
+		desiredSnowPrices[0] = 80.0;
+				desiredSnowPrices[1] = 110.0;
 	}
 
 
