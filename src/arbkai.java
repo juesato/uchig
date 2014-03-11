@@ -155,22 +155,24 @@ public class arbkai extends AbstractExchangeArbCase {
             if (position <= -selfImposedPositionLimit) {
                 adjustBasedOnPosition = (-position-selfImposedPositionLimit)*positionConstant;
             }
+            adjustBasedOnPosition = 0;
                 //log ("ADJUSTING" + adjustBasedOnPosition); 
             
             double netpnl = fair*position - spent;
-            //log ("CURRENT PNL: " + netpnl);
+            log ("PNL: " + netpnl + " Position: " + position);
             double dontTrade = 30.00;
             //log ("My fair price bb: " + fair);
             
             //double threshold = 1.0;
             if (Math.abs(robotMid-snowMid) > threshold) {
-                log ("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW this is an arbitrage opportunity");
+                log ("Arbitrage opportunity!");
                 dontTrade = 0.0;
             }
             
             double adjustedFair = fair + adjustBasedOnPosition;
             double spreadSizeOneDirection = Math.max(aggression*maxChange+edge+dontTrade, minSpread/2);
-            
+            log ("Spread size: " + spreadSizeOneDirection + " from volatility: " + aggression*maxChange);
+            log ("Donttrade: " + dontTrade);
             if (runAlgo == 0) {
                 spreadSizeOneDirection = 1000;
             }
