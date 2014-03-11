@@ -34,6 +34,7 @@ public class arbkai extends AbstractExchangeArbCase {
     double threshold;
     double edge;
     double minSpread;
+    int runAlgo;
     int timeStep = 5; //first time this will be incremented is at 5
     int totalTrades; //decent metric of how aggressive we're being
     
@@ -50,6 +51,7 @@ public class arbkai extends AbstractExchangeArbCase {
             setup.addVariable("threshold", "threshold on difference between two exchanges before trading", "double", "1.0");
             setup.addVariable("edge", "small amount of edge", "double", "0.20");
             setup.addVariable("minSpread", "minimum size of spread (for round 3 should be 3 for safety)", "double", "3.0");
+            setup.addVariable("runAlgo", "1 to run alg, 0 to not run", "int", "1");
         }
 
         public void initializeAlgo(IDB database) {
@@ -61,6 +63,7 @@ public class arbkai extends AbstractExchangeArbCase {
             threshold = getDoubleVar("threshold");
             edge = getDoubleVar("edge");
             minSpread = getDoubleVar("minSpread");
+            runAlgo = getIntVar("runAlgo");
         }
 
         @Override
@@ -167,6 +170,10 @@ public class arbkai extends AbstractExchangeArbCase {
             
             double adjustedFair = fair + adjustBasedOnPosition;
             double spreadSizeOneDirection = Math.max(aggression*maxChange+edge+dontTrade, minSpread/2);
+            
+            if (runAlgo == 0) {
+                spreadSizeOneDirection = 1000;
+            }
             
             desiredRobotPrices[0] = adjustedFair-spreadSizeOneDirection;
             desiredRobotPrices[1] = adjustedFair+spreadSizeOneDirection;
