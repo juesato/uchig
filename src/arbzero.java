@@ -1,6 +1,7 @@
 
 
 import org.chicago.cases.AbstractExchangeArbCase;
+import org.chicago.cases.AbstractExchangeArbCase.AlgoSide;
 import org.chicago.cases.AbstractExchangeArbCase.ArbCase;
 import org.chicago.cases.arb.Quote;
 
@@ -16,8 +17,12 @@ public class arbzero extends AbstractExchangeArbCase implements ArbCase {
     int factor;
 
     int position;
-    double[] desiredRobotPrices;
-    double[] desiredSnowPrices;
+    double[] desiredRobotPrices = new double[2];
+    double[] desiredSnowPrices = new double[2];
+    double pnl;
+    double spent;
+    double fair;
+
 
     public void addVariables(IJobSetup setup) {
         // Registers a variable with the system.
@@ -34,12 +39,20 @@ public class arbzero extends AbstractExchangeArbCase implements ArbCase {
 
 
     public void fillNotice(Exchange exchange, double price, AlgoSide algoside) {
-        log("My quote was filled with at a price of " + price + " on " + exchange + " as a " + algoside);
-
+        log("QUOTE FILLED at a price of " + price + " on " + exchange + " as a " + algoside);
         if(algoside == AlgoSide.ALGOBUY){
             position += 1;
+            spent+=price;
         }else{
             position -= 1;
+            spent-=price;
+        }
+        pnl = position*fair-spent;
+        if (position == 0) {
+            log("POSITION 0! " + pnl);
+        }
+        else {
+            log("CURRENT NET PNL IS: " + pnl + " Position: " + position);
         }
     }
 
@@ -47,6 +60,7 @@ public class arbzero extends AbstractExchangeArbCase implements ArbCase {
     public void positionPenalty(int clearedQuantity, double price) {
         log("I received a position penalty with " + clearedQuantity + " positions cleared at " + price);
         position -= clearedQuantity;
+        spent -= clearedQuantity*price;
     }
 
     public void newTopOfBook(Quote[] quotes) {
@@ -54,11 +68,19 @@ public class arbzero extends AbstractExchangeArbCase implements ArbCase {
             log("I received a new bid of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
         }
 
-        desiredRobotPrices[0] = 0.0;
-        desiredRobotPrices[1] = 600.0;
+        double robotMid = (quotes[0].bidPrice+quotes[0].askPrice)/2.0;
+        double snowMid = (quotes[1].bidPrice+quotes[1].askPrice)/2.0;
+        
+        fair = (robotMid+snowMid)/2.0;
+        
+        double netpnl = fair*position - spent;
+        log ("PNL: " + netpnl + " Position: " + position);
+
+        desiredRobotPrices[0] = 80.0;
+        desiredRobotPrices[1] = 110.0;
         log ("Bid at " + desiredRobotPrices[0] + " and ask of " + desiredRobotPrices[1]);
-        desiredSnowPrices[0] = 0.0;
-        desiredSnowPrices[1] = 600.0;
+        desiredSnowPrices[0] = 80.0;
+        desiredSnowPrices[1] = 110.0;
     }
 
 

@@ -34,6 +34,12 @@ public class arbkai extends AbstractExchangeArbCase {
     double threshold;
     double edge;
     double minSpread;
+    double positionConstant;
+    double upperBound;
+    double lowerBound;
+    double center;
+    int numAtLower = 0;
+    int numAtUpper = 0;
     int runAlgo;
     int timeStep = 5; //first time this will be incremented is at 5
     int totalTrades; //decent metric of how aggressive we're being
@@ -47,11 +53,15 @@ public class arbkai extends AbstractExchangeArbCase {
 
         public void addVariables(IJobSetup setup) {
             // Registers a variable with the system.
-            setup.addVariable("aggression", "factor used to adjust something", "double", "0.75");
+            setup.addVariable("aggression", "aggressiveness factor", "double", "0.75");
             setup.addVariable("threshold", "threshold on difference between two exchanges before trading", "double", "1.0");
             setup.addVariable("edge", "small amount of edge", "double", "0.20");
+            setup.addVariable("positionConstant", "How much to fade", "double", "0.10");
             setup.addVariable("minSpread", "minimum size of spread (for round 3 should be 3 for safety)", "double", "3.0");
-            setup.addVariable("runAlgo", "1 to run alg, 0 to not run", "int", "1");
+            setup.addVariable("runAlgo", "0 to run alg, 1/2/3 for +-20/15/10", "int", "0");
+            setup.addVariable("upperBound", "R1: 120, R2: 160, R3: 115", "double", "120.0");
+            setup.addVariable("lowerBound", "R1: 80, R2: 40, R3: 85", "double", "80.0");
+            setup.addVariable("center", "Guess is 100", "double", "100.0");
         }
 
         public void initializeAlgo(IDB database) {
@@ -62,8 +72,12 @@ public class arbkai extends AbstractExchangeArbCase {
             aggression = getDoubleVar("aggression");
             threshold = getDoubleVar("threshold");
             edge = getDoubleVar("edge");
+            positionConstant = getDoubleVar("positionConstant");
             minSpread = getDoubleVar("minSpread");
             runAlgo = getIntVar("runAlgo");
+            upperBound = getDoubleVar("upperBound");
+            lowerBound = getDoubleVar("lowerBound");
+            center = getDoubleVar("center");
         }
 
         @Override
@@ -73,15 +87,20 @@ public class arbkai extends AbstractExchangeArbCase {
             if(algoside == AlgoSide.ALGOBUY){
                 position += 1;
                 spent+=price;
-  
-            }else{
+                if (Math.abs(price-lowerBound)<=0.1) {
+                    numAtLower++;
+                }
+            }
+            else{
                 position -= 1;
                 spent-=price;
+                if (Math.abs(price-upperBound)<=0.1) {
+                    numAtUpper++;
+                }
             }
             totalTrades++;
             log ("TOTAL TRADES " + totalTrades);
             //log ("TIME IS T=" + timeStep);
-            
             pnl = position*fair-spent;
             if (position == 0) {
                 log("POSITION 0! " + pnl);
@@ -103,7 +122,7 @@ public class arbkai extends AbstractExchangeArbCase {
             timeStep++;
             log ("TIME: " + timeStep);
             for (Quote quote : quotes) {
-                //log("NEW BID of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
+                log("NEW BID of " + quote.bidPrice + ", and ask of " + quote.askPrice + " from " + quote.exchange);
             }
 
             double robotMid = (quotes[0].bidPrice+quotes[0].askPrice)/2.0;
@@ -126,6 +145,7 @@ public class arbkai extends AbstractExchangeArbCase {
             size = robotTrackedQuotes.size();
             
             
+            
              /**
              * Calcuate volatility here based on robotTrackedQuotes and snowTrackedQuotes
              */
@@ -141,11 +161,10 @@ public class arbkai extends AbstractExchangeArbCase {
             }
             
             double adjustBasedOnPosition = 0.0;
-            double positionConstant = 0.10;
             int selfImposedPositionLimit = 160;
             if (timeStep > 750) {
                 int helperVar = (timeStep-750)/10;
-                selfImposedPositionLimit = 160-helperVar*6;
+                selfImposedPositionLimit = Math.abs(160-helperVar*6);
             }
                 
             if (position >= selfImposedPositionLimit) {
@@ -155,34 +174,70 @@ public class arbkai extends AbstractExchangeArbCase {
             if (position <= -selfImposedPositionLimit) {
                 adjustBasedOnPosition = (-position-selfImposedPositionLimit)*positionConstant;
             }
-            adjustBasedOnPosition = 0;
                 //log ("ADJUSTING" + adjustBasedOnPosition); 
+            
             
             double netpnl = fair*position - spent;
             log ("PNL: " + netpnl + " Position: " + position);
             double dontTrade = 30.00;
             //log ("My fair price bb: " + fair);
             
+            if (numAtLower>10 && netpnl<0) {
+                numAtLower = 0;
+                lowerBound -= 5;
+            }
+            if (numAtUpper>10 && netpnl<0) {
+                numAtUpper = 0;
+                upperBound += 5;
+            }
+
+
+            
+            
+            
             //double threshold = 1.0;
             if (Math.abs(robotMid-snowMid) > threshold) {
                 log ("Arbitrage opportunity!");
                 dontTrade = 0.0;
             }
-            
             double adjustedFair = fair + adjustBasedOnPosition;
             double spreadSizeOneDirection = Math.max(aggression*maxChange+edge+dontTrade, minSpread/2);
-            log ("Spread size: " + spreadSizeOneDirection + " from volatility: " + aggression*maxChange);
-            log ("Donttrade: " + dontTrade);
-            if (runAlgo == 0) {
-                spreadSizeOneDirection = 1000;
+            log ("Spread size: " + spreadSizeOneDirection);
+            if (runAlgo == 1) {
+                adjustedFair = center;
+                spreadSizeOneDirection = 20;
             }
-            
-            desiredRobotPrices[0] = adjustedFair-spreadSizeOneDirection;
-            desiredRobotPrices[1] = adjustedFair+spreadSizeOneDirection;
+            if (runAlgo == 2) {
+                adjustedFair = center;
+                spreadSizeOneDirection = 15;
+            }
+            if (runAlgo == 3) {
+                adjustedFair = center;
+                spreadSizeOneDirection = 10;
+            }
+            if (position >= 190) {
+                desiredRobotPrices[0] = 0;
+                desiredRobotPrices[1] = Math.max(quotes[0].bidPrice, quotes[1].bidPrice);
 
-            desiredSnowPrices[0] = adjustedFair-spreadSizeOneDirection;
-            desiredSnowPrices[1] = adjustedFair+spreadSizeOneDirection;
-            
+                desiredSnowPrices[0] = 0;
+                desiredSnowPrices[1] = Math.max(quotes[0].bidPrice, quotes[1].bidPrice);
+            }
+            else if (position <= -190) {
+                desiredRobotPrices[0] = Math.min(quotes[0].askPrice, quotes[1].askPrice);
+                desiredRobotPrices[1] = 500.0;
+
+                desiredSnowPrices[0] = Math.min(quotes[0].askPrice, quotes[1].askPrice);
+                desiredSnowPrices[1] = 500.0;
+
+            }
+            else {
+                
+                desiredRobotPrices[0] = Math.max(adjustedFair-spreadSizeOneDirection, lowerBound);
+                desiredRobotPrices[1] = Math.min(adjustedFair+spreadSizeOneDirection, upperBound);
+    
+                desiredSnowPrices[0] = Math.max(adjustedFair-spreadSizeOneDirection, lowerBound);
+                desiredSnowPrices[1] = Math.min(adjustedFair+spreadSizeOneDirection, upperBound);
+            }
         }
 
         @Override
