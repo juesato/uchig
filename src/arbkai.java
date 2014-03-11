@@ -55,7 +55,7 @@ public class arbkai extends AbstractExchangeArbCase {
             // Registers a variable with the system.
             setup.addVariable("aggression", "aggressiveness factor", "double", "0.75");
             setup.addVariable("threshold", "threshold on difference between two exchanges before trading", "double", "1.0");
-            setup.addVariable("edge", "small amount of edge", "double", "0.20");
+            setup.addVariable("edge", "To DO NOTHING, make this 200 and adjust LOWERBOUND and UPPERBOUND to 0, 200", "double", "0.20");
             setup.addVariable("positionConstant", "How much to fade", "double", "0.10");
             setup.addVariable("minSpread", "minimum size of spread (for round 3 should be 3 for safety)", "double", "3.0");
             setup.addVariable("runAlgo", "0 to run alg, 1/2/3 for +-20/15/10", "int", "0");
