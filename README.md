@@ -1,4 +1,4 @@
-uchig
+UChicago Algorithmic Trading Competition 2014
 =====
 
-algo trading
+The code for MIT3. Runs on OptionCity trading platform on competition cases.
